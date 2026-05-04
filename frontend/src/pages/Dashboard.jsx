@@ -19,41 +19,78 @@ const StatusBadge = ({ status, t }) => {
 
 const ClientDashboard = () => {
     const [orders, setOrders] = useState([]);
+    const [requests, setRequests] = useState([]);
     const { t, translateService } = useContext(LanguageContext);
     
     useEffect(() => {
         api.get('/api/orders').then(res => setOrders(res.data));
+        api.get('/api/requests').then(res => setRequests(res.data));
     }, []);
 
     return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">{t('myOrders')}</h2>
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('serviceLabel')}</th>
-                            <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('status')}</th>
-                            <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('expertLabel')}</th>
-                            <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('actions')}</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                        {orders.map(order => (
-                            <tr key={order.id}>
-                                <td className="px-6 py-4">{translateService(order.service).title}</td>
-                                <td className="px-6 py-4"><StatusBadge status={order.status} t={t} /></td>
-                                <td className="px-6 py-4">{order.expert ? order.expert.full_name : t('pendingAssignment')}</td>
-                                <td className="px-6 py-4 text-sm font-medium">
-                                    {order.status !== 'pending' && (
-                                        <Link to={`/chat/${order.id}`} className="text-blue-600 hover:text-blue-900">{t('openChat')}</Link>
-                                    )}
-                                </td>
+        <div className="space-y-10">
+            <div>
+                <h2 className="text-2xl font-bold mb-4">{t('myRequests')}</h2>
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                    <table className="w-full">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('serviceLabel')}</th>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('status')}</th>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('actions')}</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-                {orders.length === 0 && <div className="p-6 text-center text-gray-500">{t('noOrdersYet')}</div>}
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                            {requests.map(req => (
+                                <tr key={req.id}>
+                                    <td className="px-6 py-4">{translateService(req.service).title}</td>
+                                    <td className="px-6 py-4">
+                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${req.status === 'accepted' ? 'bg-green-100 text-green-800' : req.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                            {t(req.status)}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-sm font-medium">
+                                        {(req.status === 'accepted' || req.status === 'pending') && (
+                                            <Link to={`/chat/${req.id}`} className="text-blue-600 hover:text-blue-900">{t('openChat')}</Link>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {requests.length === 0 && <div className="p-6 text-center text-gray-500">{t('noRequestsYet')}</div>}
+                </div>
+            </div>
+
+            <div>
+                <h2 className="text-2xl font-bold mb-4">{t('myOrders')}</h2>
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                    <table className="w-full">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('serviceLabel')}</th>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('status')}</th>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('expertLabel')}</th>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('actions')}</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                            {orders.map(order => (
+                                <tr key={order.id}>
+                                    <td className="px-6 py-4">{translateService(order.service).title}</td>
+                                    <td className="px-6 py-4"><StatusBadge status={order.status} t={t} /></td>
+                                    <td className="px-6 py-4">{order.expert ? order.expert.full_name : t('pendingAssignment')}</td>
+                                    <td className="px-6 py-4 text-sm font-medium">
+                                        {order.status !== 'pending' && (
+                                            <Link to={`/chat/${order.id}`} className="text-blue-600 hover:text-blue-900">{t('openChat')}</Link>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {orders.length === 0 && <div className="p-6 text-center text-gray-500">{t('noOrdersYet')}</div>}
+                </div>
             </div>
         </div>
     );
@@ -61,10 +98,12 @@ const ClientDashboard = () => {
 
 const ExpertDashboard = () => {
     const [orders, setOrders] = useState([]);
+    const [requests, setRequests] = useState([]);
     const { t, translateService } = useContext(LanguageContext);
 
     useEffect(() => {
         api.get('/api/orders').then(res => setOrders(res.data));
+        api.get('/api/requests').then(res => setRequests(res.data));
     }, []);
 
     const handleComplete = async (orderId) => {
@@ -76,35 +115,64 @@ const ExpertDashboard = () => {
     }
 
     return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">{t('assignedOrders')}</h2>
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('serviceLabel')}</th>
-                            <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('client')}</th>
-                            <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('status')}</th>
-                            <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('actions')}</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                        {orders.map(order => (
-                            <tr key={order.id}>
-                                <td className="px-6 py-4">{translateService(order.service).title}</td>
-                                <td className="px-6 py-4">{order.client.full_name || order.client.company_name}</td>
-                                <td className="px-6 py-4"><StatusBadge status={order.status} t={t} /></td>
-                                <td className="px-6 py-4 text-sm font-medium flex gap-3">
-                                    <Link to={`/chat/${order.id}`} className="text-blue-600 hover:text-blue-900">{t('chat')}</Link>
-                                    {order.status === 'assigned' && (
-                                        <button onClick={() => handleComplete(order.id)} className="text-green-600 hover:text-green-900">{t('complete')}</button>
-                                    )}
-                                </td>
+        <div className="space-y-10">
+            <div>
+                <h2 className="text-2xl font-bold mb-4">{t('assignedRequests')}</h2>
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                    <table className="w-full">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('serviceLabel')}</th>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('client')}</th>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('actions')}</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-                {orders.length === 0 && <div className="p-6 text-center text-gray-500">{t('noAssignedOrders')}</div>}
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                            {requests.map(req => (
+                                <tr key={req.id}>
+                                    <td className="px-6 py-4">{translateService(req.service).title}</td>
+                                    <td className="px-6 py-4">{req.name}</td>
+                                    <td className="px-6 py-4 text-sm font-medium">
+                                        <Link to={`/chat/${req.id}`} className="text-blue-600 hover:text-blue-900">{t('chat')}</Link>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {requests.length === 0 && <div className="p-6 text-center text-gray-500">{t('noAssignedRequests')}</div>}
+                </div>
+            </div>
+
+            <div>
+                <h2 className="text-2xl font-bold mb-4">{t('assignedOrders')}</h2>
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                    <table className="w-full">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('serviceLabel')}</th>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('client')}</th>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('status')}</th>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('actions')}</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                            {orders.map(order => (
+                                <tr key={order.id}>
+                                    <td className="px-6 py-4">{translateService(order.service).title}</td>
+                                    <td className="px-6 py-4">{order.client.full_name || order.client.company_name}</td>
+                                    <td className="px-6 py-4"><StatusBadge status={order.status} t={t} /></td>
+                                    <td className="px-6 py-4 text-sm font-medium flex gap-3">
+                                        <Link to={`/chat/${order.id}`} className="text-blue-600 hover:text-blue-900">{t('chat')}</Link>
+                                        {order.status === 'assigned' && (
+                                            <button onClick={() => handleComplete(order.id)} className="text-green-600 hover:text-green-900">{t('complete')}</button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {orders.length === 0 && <div className="p-6 text-center text-gray-500">{t('noAssignedOrders')}</div>}
+                </div>
             </div>
         </div>
     );
@@ -129,6 +197,13 @@ const AdminDashboard = () => {
     const handleApproveExpert = async (id) => {
         await api.put(`/api/admin/experts/${id}/approve`);
         fetchData();
+    };
+
+    const handleRejectExpert = async (id) => {
+        if(window.confirm(t('confirmDelete') || 'Are you sure you want to reject this expert?')) {
+            await api.delete(`/api/admin/experts/${id}/reject`);
+            fetchData();
+        }
     };
 
     const handleAssignExpert = async (orderId, expertId) => {
@@ -162,8 +237,9 @@ const AdminDashboard = () => {
                                     <td className="px-6 py-4">
                                         <a href={`http://127.0.0.1:5000/uploads/${exp.cv_file}`} target="_blank" rel="noreferrer" className="text-blue-600 underline">{t('viewPdf')}</a>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <button onClick={() => handleApproveExpert(exp.id)} className="bg-green-500 text-white px-3 py-1 rounded">{t('approve')}</button>
+                                    <td className="px-6 py-4 flex gap-2">
+                                        <button onClick={() => handleApproveExpert(exp.id)} className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">{t('approve')}</button>
+                                        <button onClick={() => handleRejectExpert(exp.id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">{t('reject') || 'Reject'}</button>
                                     </td>
                                 </tr>
                             ))}

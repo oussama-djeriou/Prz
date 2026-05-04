@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import api from '../api';
 import { LanguageContext } from '../LanguageContext';
 import { useNavigate } from 'react-router-dom';
+import PrivacyPolicyModal from '../components/PrivacyPolicyModal';
 
 const Register = () => {
     const [role, setRole] = useState('individual');
@@ -12,7 +13,9 @@ const Register = () => {
     const [cvFile, setCvFile] = useState(null);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const { t } = useContext(LanguageContext);
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { t, lang } = useContext(LanguageContext);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -140,10 +143,28 @@ const Register = () => {
                     )}
                 </div>
 
+                <div className={`mt-4 flex items-center ${lang === 'ar' ? 'flex-row-reverse justify-end' : ''}`}>
+                    <input 
+                        type="checkbox" 
+                        id="terms" 
+                        required 
+                        checked={agreedToTerms} 
+                        onChange={(e) => setAgreedToTerms(e.target.checked)} 
+                        className={`w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 ${lang === 'ar' ? 'ml-2' : 'mr-2'}`} 
+                    />
+                    <label htmlFor="terms" className="text-sm text-gray-700">
+                        {t('agreeToTerms')}
+                        <button type="button" onClick={() => setIsModalOpen(true)} className="text-blue-600 hover:underline">
+                            {t('termsAndPrivacy')}
+                        </button>
+                    </label>
+                </div>
+
                 <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 mt-6">
                     {t('register')}
                 </button>
             </form>
+            <PrivacyPolicyModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </div>
     );
 };

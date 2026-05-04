@@ -1,18 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import api from '../api';
 import { LanguageContext } from '../LanguageContext';
+import PrivacyPolicyModal from '../components/PrivacyPolicyModal';
 
 const initialForm = {
     name: '',
     email: '',
     phone: '',
     company: '',
-    message: ''
+    message: '',
+    clientType: 'regularUser'
 };
 
 const ServiceDetails = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { t, lang, translateService } = useContext(LanguageContext);
     const [service, setService] = useState(null);
     const [form, setForm] = useState(initialForm);
@@ -20,6 +23,8 @@ const ServiceDetails = () => {
     const [submitting, setSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchService = async () => {
@@ -43,6 +48,13 @@ const ServiceDetails = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if (!localStorage.getItem('token')) {
+            setError('You must be logged in to submit a request');
+            setTimeout(() => navigate('/login'), 2000);
+            return;
+        }
+
         setSubmitting(true);
         setError('');
         setSuccess(false);
@@ -132,14 +144,48 @@ const ServiceDetails = () => {
                                 <span className="block text-sm font-medium text-gray-700 mb-1">{t('phone')}</span>
                                 <input name="phone" value={form.phone} onChange={handleChange} required className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                             </label>
-                            <label className="block text-start">
-                                <span className="block text-sm font-medium text-gray-700 mb-1">{t('companyName')}</span>
-                                <input name="company" value={form.company} onChange={handleChange} className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                            </label>
+                            <div className="block text-start mb-4">
+                                <span className="block text-sm font-medium text-gray-700 mb-2">{t('clientType')}</span>
+                                <div className="flex gap-4">
+                                    <label className="flex items-center">
+                                        <input type="radio" name="clientType" value="regularUser" checked={form.clientType === 'regularUser'} onChange={handleChange} className={lang === 'ar' ? 'ml-2' : 'mr-2'} />
+                                        {t('regularUser')}
+                                    </label>
+                                    <label className="flex items-center">
+                                        <input type="radio" name="clientType" value="institution" checked={form.clientType === 'institution'} onChange={handleChange} className={lang === 'ar' ? 'ml-2' : 'mr-2'} />
+                                        {t('institution')}
+                                    </label>
+                                </div>
+                            </div>
+
+                            {form.clientType === 'institution' && (
+                                <label className="block text-start">
+                                    <span className="block text-sm font-medium text-gray-700 mb-1">{t('companyName')}</span>
+                                    <input name="company" value={form.company} onChange={handleChange} className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                </label>
+                            )}
                             <label className="block text-start">
                                 <span className="block text-sm font-medium text-gray-700 mb-1">{t('message')}</span>
                                 <textarea name="message" value={form.message} onChange={handleChange} required rows="5" className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                             </label>
+
+                            <div className={`mt-4 flex items-center ${lang === 'ar' ? 'flex-row-reverse justify-end' : ''}`}>
+                                <input 
+                                    type="checkbox" 
+                                    id="terms" 
+                                    required 
+                                    checked={agreedToTerms} 
+                                    onChange={(e) => setAgreedToTerms(e.target.checked)} 
+                                    className={`w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 ${lang === 'ar' ? 'ml-2' : 'mr-2'}`} 
+                                />
+                                <label htmlFor="terms" className="text-sm text-gray-700">
+                                    {t('agreeToTerms')}
+                                    <button type="button" onClick={() => setIsModalOpen(true)} className="text-blue-600 hover:underline">
+                                        {t('termsAndPrivacy')}
+                                    </button>
+                                </label>
+                            </div>
+
                             <button type="submit" disabled={submitting} className="w-full bg-blue-600 text-white font-semibold px-4 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
                                 {t('submit')}
                             </button>
@@ -147,6 +193,7 @@ const ServiceDetails = () => {
                     </aside>
                 </div>
             </div>
+            <PrivacyPolicyModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </div>
     );
 };

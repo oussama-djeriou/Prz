@@ -128,7 +128,7 @@ def login():
     if user.role == 'expert' and not user.approved:
         return jsonify({'message': 'Account pending admin approval'}), 403
 
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
     return jsonify({
         'access_token': access_token,
         'user': user.to_dict()
@@ -158,9 +158,9 @@ def get_service(service_id):
     return jsonify(service.to_dict()), 200
 
 @app.route('/api/requests', methods=['POST'])
+@jwt_required()
 def create_service_request():
     data = request.get_json() or {}
-    print("New request:", data)
     required_fields = ['name', 'email', 'phone', 'message', 'service_id']
     missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
@@ -170,12 +170,7 @@ def create_service_request():
     if not service:
         return jsonify({'message': 'Service not found'}), 404
 
-    current_user_id = None
-    try:
-        verify_jwt_in_request(optional=True)
-        current_user_id = get_jwt_identity()
-    except Exception:
-        current_user_id = None
+    current_user_id = get_jwt_identity()
 
     service_request = ServiceRequest(
         name=data.get('name'),
@@ -190,17 +185,37 @@ def create_service_request():
     db.session.add(service_request)
     db.session.commit()
 
-    print(
-        "Mock email: new service request "
-        f"#{service_request.id} for {service.title} from {service_request.name} "
-        f"<{service_request.email}>"
-    )
+    admin = User.query.filter_by(role='admin').first()
+    if admin:
+        welcome_message = ChatMessage(
+            request_id=service_request.id,
+            sender_id=admin.id,
+            content='مرحباً بك! لقد استلمنا طلبك وسيتم مراجعته والتواصل معك قريباً لربطك بالخبير المناسب.'
+        )
+        db.session.add(welcome_message)
+        db.session.commit()
+
+    # Send receipt email
+    try:
+        send_request_received_email(service_request)
+    except Exception as e:
+        print(f"Error sending receipt email: {e}")
 
     return jsonify(service_request.to_dict()), 201
 
 @app.route('/api/requests', methods=['GET'])
+@jwt_required()
 def get_service_requests():
-    requests = ServiceRequest.query.order_by(ServiceRequest.created_at.desc()).all()
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    
+    if user.role == 'admin':
+        requests = ServiceRequest.query.order_by(ServiceRequest.created_at.desc()).all()
+    elif user.role == 'expert':
+        requests = ServiceRequest.query.filter_by(expert_id=user.id).order_by(ServiceRequest.created_at.desc()).all()
+    else:
+        requests = ServiceRequest.query.filter_by(user_id=user.id).order_by(ServiceRequest.created_at.desc()).all()
+        
     return jsonify([service_request.to_dict() for service_request in requests]), 200
 
 def send_email(to, subject, body):
@@ -224,14 +239,27 @@ def test_email():
     )
     return 'Email sent!'
 
+def send_request_received_email(service_request):
+    service_title = service_request.service.title if service_request.service else 'Requested service'
+    subject = f'PRZ - Request Received #{service_request.id}'
+    body = f"""Hello {service_request.name},
+We have successfully received your request for "{service_title}".
+Our team is currently reviewing it and will get back to you soon.
+You can track your request status in your dashboard.
+Thank you for choosing PRZ."""
+    send_email(service_request.email, subject, body)
+
 def send_request_status_email(service_request):
     service_title = service_request.service.title if service_request.service else 'Requested service'
 
     if service_request.status == 'accepted':
         subject = 'PRZ - Request Accepted'
+        chat_link = f"http://localhost:5173/chat/{service_request.id}"
         body = f"""Hello {service_request.name},
 Your request for "{service_title}" has been accepted.
-Our team will contact you soon.
+You can now start chatting with your assigned expert to get the service.
+Click the link below to open the chat:
+{chat_link}
 Thank you for choosing PRZ."""
     else:
         subject = 'PRZ - Request Update'
@@ -299,20 +327,24 @@ def is_chat_participant(user, service_request):
 @jwt_required()
 def accept_service_request(request_id):
     user_id = get_jwt_identity()
-    print("USER:", user_id)
     user = User.query.get(user_id)
-    if not user:
-        return jsonify({"msg": "User not found"}), 404
-    if user.role != "admin":
+    if not user or user.role != "admin":
         return jsonify({"msg": "Admins only"}), 403
+
+    data = request.get_json() or {}
+    expert_id = data.get('expert_id')
+    if not expert_id:
+        return jsonify({"msg": "Expert assignment required"}), 400
 
     service_request = ServiceRequest.query.get(request_id)
     if not service_request:
         return jsonify({'message': 'Request not found'}), 404
 
-    dummy_expert = User.query.filter_by(role='expert', approved=True).first()
-    if dummy_expert:
-        service_request.expert_id = dummy_expert.id
+    expert = User.query.get(expert_id)
+    if not expert or expert.role != 'expert':
+        return jsonify({"msg": "Invalid expert selected"}), 400
+
+    service_request.expert_id = expert_id
     service_request.status = 'accepted'
     db.session.commit()
 
@@ -418,6 +450,79 @@ def approve_expert(expert_id):
     expert.approved = True
     db.session.commit()
     return jsonify({'message': 'Expert approved'}), 200
+
+@app.route('/api/admin/experts/<int:expert_id>/reject', methods=['DELETE'])
+@jwt_required()
+def reject_expert(expert_id):
+    _, error_response = require_admin()
+    if error_response:
+        return error_response
+    
+    expert = User.query.get(expert_id)
+    if not expert or expert.role != 'expert':
+        return jsonify({'message': 'Expert not found'}), 404
+        
+    db.session.delete(expert)
+    db.session.commit()
+    return jsonify({'message': 'Expert rejected and removed'}), 200
+
+@app.route('/api/admin/services', methods=['POST'])
+@jwt_required()
+def create_service():
+    _, error_response = require_admin()
+    if error_response:
+        return error_response
+    
+    data = request.get_json() or {}
+    title = data.get('title')
+    description = data.get('description')
+    category = data.get('category')
+    
+    if not title or not description:
+        return jsonify({'message': 'Title and description are required'}), 400
+        
+    new_service = Service(title=title, description=description, category=category or 'Uncategorized')
+    db.session.add(new_service)
+    db.session.commit()
+    
+    return jsonify(new_service.to_dict()), 201
+
+@app.route('/api/admin/services/<int:service_id>', methods=['PUT'])
+@jwt_required()
+def update_service(service_id):
+    _, error_response = require_admin()
+    if error_response:
+        return error_response
+        
+    service = Service.query.get(service_id)
+    if not service:
+        return jsonify({'message': 'Service not found'}), 404
+        
+    data = request.get_json() or {}
+    if 'title' in data:
+        service.title = data['title']
+    if 'description' in data:
+        service.description = data['description']
+    if 'category' in data:
+        service.category = data['category']
+        
+    db.session.commit()
+    return jsonify(service.to_dict()), 200
+
+@app.route('/api/admin/services/<int:service_id>', methods=['DELETE'])
+@jwt_required()
+def delete_service(service_id):
+    _, error_response = require_admin()
+    if error_response:
+        return error_response
+        
+    service = Service.query.get(service_id)
+    if not service:
+        return jsonify({'message': 'Service not found'}), 404
+        
+    db.session.delete(service)
+    db.session.commit()
+    return jsonify({'message': 'Service deleted'}), 200
 
 # --- ORDER ROUTES ---
 
