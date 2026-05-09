@@ -6,13 +6,18 @@ import { LanguageContext } from '../LanguageContext';
 
 const StatusBadge = ({ status, t }) => {
     let colorClass = 'bg-gray-100 text-gray-800';
-    if (status === 'completed') colorClass = 'bg-green-100 text-green-800';
-    else if (status === 'assigned') colorClass = 'bg-blue-100 text-blue-800';
-    else if (status === 'pending') colorClass = 'bg-yellow-100 text-yellow-800';
-    
+    if (status === 'completed')       colorClass = 'bg-green-100 text-green-800';
+    else if (status === 'assigned')   colorClass = 'bg-blue-100 text-blue-800';
+    else if (status === 'pending')    colorClass = 'bg-yellow-100 text-yellow-800';
+    else if (status === 'accepted')   colorClass = 'bg-green-100 text-green-800';
+    else if (status === 'rejected')   colorClass = 'bg-red-100 text-red-800';
+    else if (status === 'expert_assigned') colorClass = 'bg-purple-100 text-purple-800';
+
+    const label = status === 'expert_assigned' ? t('expertAssigned') : (t(status) || status);
+
     return (
         <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full capitalize ${colorClass}`}>
-            {t(status) || status}
+            {label}
         </span>
     );
 };
@@ -101,18 +106,37 @@ const ExpertDashboard = () => {
     const [requests, setRequests] = useState([]);
     const { t, translateService } = useContext(LanguageContext);
 
-    useEffect(() => {
-        api.get('/api/orders').then(res => setOrders(res.data));
-        api.get('/api/requests').then(res => setRequests(res.data));
-    }, []);
+    const fetchData = async () => {
+        const [ordersRes, requestsRes] = await Promise.all([
+            api.get('/api/orders'),
+            api.get('/api/requests'),
+        ]);
+        setOrders(ordersRes.data);
+        setRequests(requestsRes.data);
+    };
+
+    useEffect(() => { fetchData(); }, []);
 
     const handleComplete = async (orderId) => {
-        if(window.confirm(t('markCompletedConfirm'))) {
+        if (window.confirm(t('markCompletedConfirm'))) {
             await api.put(`/api/orders/${orderId}/complete`);
-            const res = await api.get('/api/orders');
-            setOrders(res.data);
+            fetchData();
         }
-    }
+    };
+
+    const handleExpertDecision = async (requestId, decision) => {
+        const confirmMsg = decision === 'accepted'
+            ? t('acceptRequestConfirm')
+            : t('rejectRequestConfirm');
+        if (!window.confirm(confirmMsg)) return;
+        try {
+            await api.put(`/api/requests/${requestId}/expert-decision`, { decision });
+            fetchData();
+        } catch (err) {
+            console.error('Decision failed:', err);
+            alert(t('requestStatusUpdateError'));
+        }
+    };
 
     return (
         <div className="space-y-10">
@@ -124,6 +148,7 @@ const ExpertDashboard = () => {
                             <tr>
                                 <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('serviceLabel')}</th>
                                 <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('client')}</th>
+                                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('status')}</th>
                                 <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">{t('actions')}</th>
                             </tr>
                         </thead>
@@ -132,8 +157,37 @@ const ExpertDashboard = () => {
                                 <tr key={req.id}>
                                     <td className="px-6 py-4">{translateService(req.service).title}</td>
                                     <td className="px-6 py-4">{req.name}</td>
+                                    <td className="px-6 py-4">
+                                        <StatusBadge status={req.status} t={t} />
+                                    </td>
                                     <td className="px-6 py-4 text-sm font-medium">
-                                        <Link to={`/chat/${req.id}`} className="text-blue-600 hover:text-blue-900">{t('chat')}</Link>
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            {/* Chat is always available */}
+                                            <Link
+                                                to={`/chat/${req.id}`}
+                                                className="text-blue-600 hover:text-blue-900 font-medium"
+                                            >
+                                                {t('chat')}
+                                            </Link>
+
+                                            {/* Accept / Reject only when the admin has assigned this expert and expert hasn't decided yet */}
+                                            {(req.status === 'expert_assigned' || req.status === 'pending') && (
+                                                <>
+                                                    <button
+                                                        onClick={() => handleExpertDecision(req.id, 'accepted')}
+                                                        className="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded-full transition-colors"
+                                                    >
+                                                        ✓ {t('accept')}
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleExpertDecision(req.id, 'rejected')}
+                                                        className="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full transition-colors"
+                                                    >
+                                                        ✗ {t('reject')}
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

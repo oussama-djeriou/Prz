@@ -57,17 +57,29 @@ class Service(db.Model):
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
     category = db.Column(db.String(100), nullable=False, default='Uncategorized')
+    sub_category = db.Column(db.String(100), nullable=True)
+    bullet_points = db.Column(db.Text, nullable=True)  # JSON array stored as text
 
     def to_dict(self):
+        import json
         category = self.category
         if not category or category == 'Uncategorized':
             category = SERVICE_CATEGORY_BY_TITLE.get(self.title, 'Uncategorized')
+
+        bullets = []
+        if self.bullet_points:
+            try:
+                bullets = json.loads(self.bullet_points)
+            except Exception:
+                bullets = []
 
         return {
             'id': self.id,
             'title': self.title,
             'description': self.description,
-            'category': category
+            'category': category,
+            'sub_category': self.sub_category,
+            'bullet_points': bullets
         }
 
 class Order(db.Model):

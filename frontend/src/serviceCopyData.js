@@ -1,174 +1,604 @@
+/**
+ * serviceCopyData.js
+ * Localized copy for every service: title, description, sub_category, and bullet_points.
+ * Keys match the English "title" field stored in the database.
+ */
 const serviceCopy = {
-    en: {},
-    fr: {
-        "Annual PR Plan": { title: "Plan annuel de relations publiques", description: "Élaboration du plan annuel de relations publiques." },
-        "Situation Analysis": { title: "Analyse de la situation", description: "Analyse approfondie de la position actuelle de l'institution." },
-        "Target Audience Identification": { title: "Identification du public cible", description: "Identification et profilage du public cible." },
-        "Key Messaging": { title: "Messages clés", description: "Construction des messages de communication principaux." },
-        "Roadmap Development": { title: "Feuille de route", description: "Élaboration d'une feuille de route exécutive pour les RP." },
-        "KPI Setting": { title: "Définition des KPI", description: "Définition des indicateurs de performance pour les campagnes RP." },
-        "Audience Research": { title: "Étude du public", description: "Étude approfondie pour comprendre le public cible." },
-        "Competitor Analysis PR": { title: "Analyse concurrentielle RP", description: "Analyse des concurrents du point de vue des RP." },
-        "Audience Segmentation": { title: "Segmentation du public", description: "Segmentation du public en groupes exploitables." },
-        "Communication Channels": { title: "Canaux de communication", description: "Identification des canaux de communication les plus efficaces." },
-        "Analytical Reports": { title: "Rapports analytiques", description: "Préparation de rapports analytiques détaillés." },
-        "Institution Image Analysis": { title: "Analyse d'image", description: "Analyse de l'image publique de l'institution." },
-        "Online Monitoring": { title: "Veille en ligne", description: "Surveillance de ce qui se dit sur l'institution en ligne." },
-        "Media Coverage Measurement": { title: "Mesure de couverture médiatique", description: "Mesure du volume et de la qualité de la couverture médiatique." },
-        "Competitor Benchmarking": { title: "Benchmarking concurrentiel", description: "Comparaison de la réputation avec les concurrents." },
-        "Reputation Reports": { title: "Rapports de réputation", description: "Rapports de réputation et recommandations." },
-        "Image Improvement": { title: "Amélioration de l'image", description: "Amélioration de l'image publique globale." },
-        "Positive Content Creation": { title: "Création de contenu positif", description: "Création de contenu positif pour renforcer la réputation." },
-        "Influencer Collaboration": { title: "Collaboration avec des influenceurs", description: "Collaboration avec des influenceurs pour la confiance." },
-        "Community Management": { title: "Gestion de communauté", description: "Gestion des comptes et réponses aux commentaires." },
-        "Continuous Monitoring": { title: "Surveillance continue", description: "Surveillance continue de la réputation et du sentiment." },
-        "Proactive Crisis Plan": { title: "Plan de crise proactif", description: "Élaboration d'un plan proactif de gestion de crise." },
-        "Risk Analysis": { title: "Analyse des risques", description: "Identification et évaluation des risques potentiels." },
-        "Crisis Scenarios": { title: "Scénarios de crise", description: "Préparation de scénarios pour diverses crises." },
-        "Team Training": { title: "Formation de l'équipe", description: "Formation de l'équipe pour réagir efficacement aux crises." },
-        "Immediate Crisis Intervention": { title: "Intervention immédiate", description: "Réponse immédiate au début d'une crise." },
-        "Professional Crisis Decisions": { title: "Décisions professionnelles", description: "Prise de décision experte pendant une crise." },
-        "Real-Time Follow-Up": { title: "Suivi en temps réel", description: "Surveillance et réponse en temps réel pendant la crise." },
-        "Official Media Statements": { title: "Déclarations officielles", description: "Rédaction et diffusion de réponses médiatiques officielles." },
-        "Continuous Crisis Support": { title: "Support continu", description: "Support continu pendant toute la période de crise." },
-        "Trust Restoration": { title: "Restauration de la confiance", description: "Restauration de la confiance publique après une crise." },
-        "Post-Crisis Image Improvement": { title: "Amélioration post-crise", description: "Amélioration de l'image après une crise." },
-        "Damage Assessment": { title: "Évaluation des dommages", description: "Évaluation de l'impact et des dommages causés par la crise." },
-        "Performance Improvement": { title: "Amélioration des performances", description: "Amélioration basée sur les leçons post-crise." },
-        "Press Releases": { title: "Communiqués de presse", description: "Rédaction de communiqués de presse professionnels." },
-        "Article Writing": { title: "Rédaction d'articles", description: "Rédaction d'articles pour les médias et publications." },
-        "Digital Content": { title: "Contenu numérique", description: "Préparation de contenu numérique pour les plateformes." },
-        "Communication Scripts": { title: "Scripts de communication", description: "Rédaction de scripts de communication et messagerie." },
-        "Multilingual Content": { title: "Contenu multilingue", description: "Création de contenu en plusieurs langues." },
-        "Media Network Building": { title: "Réseau médiatique", description: "Construction d'un réseau de contacts médiatiques." },
-        "Press Release Distribution": { title: "Diffusion de communiqués", description: "Diffusion de communiqués de presse aux médias." },
-        "Coverage Follow-Up": { title: "Suivi de couverture", description: "Suivi et surveillance de la couverture médiatique." },
-        "Press Conferences": { title: "Conférences de presse", description: "Organisation de conférences de presse." },
-        "Visual Design": { title: "Design visuel", description: "Conception de contenu visuel professionnel." },
-        "Professional Posts": { title: "Publications professionnelles", description: "Création de publications soignées pour les réseaux sociaux." },
-        "Short Videos": { title: "Vidéos courtes", description: "Production de vidéos promotionnelles courtes." },
-        "Motion Graphics": { title: "Motion Graphics", description: "Conception de motion graphics pour les plateformes numériques." },
-        "Digital Presence Analysis": { title: "Analyse de présence numérique", description: "Analyse complète de la présence numérique." },
-        "General Sentiment Measurement": { title: "Mesure du sentiment", description: "Mesure du sentiment numérique global du public." },
-        "Comments Analysis": { title: "Analyse des commentaires", description: "Analyse des commentaires et réactions en ligne." },
-        "Digital Competitor Benchmarking": { title: "Benchmarking numérique", description: "Comparaison de la réputation numérique avec les concurrents." },
-        "Digital Presence Improvement": { title: "Amélioration de la présence", description: "Amélioration de l'empreinte numérique de l'institution." },
-        "Engagement Management": { title: "Gestion de l'engagement", description: "Gestion et croissance de l'interaction en ligne." },
-        "Professional Content Publishing": { title: "Publication de contenu pro", description: "Publication de contenu professionnel sur les canaux." },
-        "Performance Tracking": { title: "Suivi de performance", description: "Surveillance et reporting de la performance numérique." },
-        "Ads Management": { title: "Gestion publicitaire", description: "Gestion des campagnes publicitaires numériques." },
-        "SEO Optimization": { title: "Optimisation SEO", description: "Optimisation du référencement naturel." },
-        "Email Marketing": { title: "Email marketing", description: "Campagnes d'email marketing stratégiques." },
-        "Content Marketing": { title: "Marketing de contenu", description: "Création et diffusion de contenus marketing." },
-        "Market Study": { title: "Étude de marché", description: "Recherches et études de marché complètes." },
-        "Competitor Analysis Mkt": { title: "Analyse concurrentielle", description: "Analyse approfondie des concurrents." },
-        "Target Audience Definition": { title: "Définition de l'audience", description: "Identification et profilage des audiences cibles." },
-        "Brand Building": { title: "Construction de marque", description: "Développement stratégique de la présence de marque." },
-        "Promotional Campaigns": { title: "Campagnes promotionnelles", description: "Campagnes promotionnelles sur le terrain." },
-        "Print Distribution": { title: "Distribution d'imprimés", description: "Distribution de supports promotionnels imprimés." },
-        "Events Organization": { title: "Organisation d'événements", description: "Planification et organisation d'événements." },
-        "Promoters": { title: "Promoteurs", description: "Recrutement et gestion de promoteurs terrain." },
-        "Flyers": { title: "Flyers", description: "Impression de flyers de haute qualité." },
-        "Brochures": { title: "Brochures", description: "Impression de brochures personnalisées." },
-        "Posters": { title: "Affiches", description: "Impression d'affiches grand format." },
-        "Roll-ups": { title: "Roll-ups", description: "Bannières roll-up professionnelles." },
-        "Business Cards": { title: "Cartes de visite", description: "Impression de cartes de visite premium." },
-        "Administrative Files": { title: "Dossiers administratifs", description: "Dossiers administratifs imprimés." },
-        "Official Envelopes": { title: "Enveloppes officielles", description: "Enveloppes de marque professionnelles." },
-        "Notebooks": { title: "Carnets", description: "Carnets personnalisés à l'image de la marque." },
-        "Visual Identity Design": { title: "Design d'identité visuelle", description: "Pack complet de design d'identité visuelle." },
-        "Printing Execution": { title: "Exécution d'impression", description: "Gestion complète de l'exécution d'impression." },
-        "Fast Delivery": { title: "Livraison rapide", description: "Services accélérés de design et d'impression." },
-        "High Quality Output": { title: "Qualité premium", description: "Sortie de qualité premium pour tous les travaux." },
-        "Initial Legal Consultation": { title: "Consultation juridique initiale", description: "Consultation initiale sur les questions juridiques." },
-        "Contract Review": { title: "Revue de contrat", description: "Analyse professionnelle des contrats." },
-        "Regulatory Advice": { title: "Conseil réglementaire", description: "Conseils réglementaires et de conformité." },
-        "Administrative Legal Support": { title: "Support juridique administratif", description: "Accompagnement pour les documents juridiques administratifs." }
+    /* ─────────────────────────────────────────────────────────────────────── */
+    en: {
+        /* ── PUBLIC RELATIONS ── */
+        "Annual PR Plan": {
+            title: "Annual PR Plan",
+            sub_category: "Strategy",
+            description: "Develop a comprehensive plan defining objectives, audience, and messages.",
+            bullets: [
+                "Current situation analysis",
+                "Target audience identification",
+                "Key message building",
+                "KPI performance indicators"
+            ]
+        },
+        "Spokesperson Identity": {
+            title: "Spokesperson Identity",
+            sub_category: "Strategy",
+            description: "Train your team to professionally deal with the media.",
+            bullets: [
+                "Identify the official spokesperson",
+                "Interview training",
+                "Official statement drafting"
+            ]
+        },
+        "Audience and Market Analysis": {
+            title: "Audience & Market Analysis",
+            sub_category: "Strategy",
+            description: "In-depth study to understand your audience and competitive position.",
+            bullets: [
+                "Audience segmentation",
+                "Competitor analysis",
+                "Detailed PDF report"
+            ]
+        },
+        "Digital Reputation Assessment": {
+            title: "Digital Reputation Assessment",
+            sub_category: "Reputation",
+            description: "Comprehensive analysis of what is being said about your institution digitally.",
+            bullets: [
+                "Comprehensive platform scan",
+                "Sentiment analysis",
+                "Competitor comparison"
+            ]
+        },
+        "Positive Reputation Building": {
+            title: "Positive Reputation Building",
+            sub_category: "Reputation",
+            description: "An integrated program to improve your institution's image.",
+            bullets: [
+                "Targeted positive content",
+                "Influencer relations",
+                "Review management"
+            ]
+        },
+        "Media Content Writing": {
+            title: "Media Content Writing",
+            sub_category: "Media",
+            description: "Press releases, articles, and professional digital content.",
+            bullets: [
+                "Bilingual press releases",
+                "Opinion and news articles",
+                "Social media scripts"
+            ]
+        },
+        "Visual Content Production": {
+            title: "Visual Content Production",
+            sub_category: "Media",
+            description: "Design and produce professional visual content.",
+            bullets: [
+                "Post design",
+                "Reels videos",
+                "Motion graphics"
+            ]
+        },
+        "Proactive Crisis Plan": {
+            title: "Proactive Crisis Plan",
+            sub_category: "Crisis",
+            description: "Prepare a comprehensive crisis plan before it occurs.",
+            bullets: [
+                "Risk mapping",
+                "Response protocols",
+                "Ready-made response templates",
+                "Team training"
+            ]
+        },
+        "Current Crisis Management": {
+            title: "Current Crisis Management",
+            sub_category: "Crisis",
+            description: "Immediate emergency intervention 7/24 to manage an ongoing crisis.",
+            bullets: [
+                "Crisis assessment within 2 hours",
+                "Immediate response plan",
+                "Real-time follow-up 7/24"
+            ]
+        },
+        /* ── ADVERTISING ── */
+        "Digital Advertising": {
+            title: "Digital Advertising",
+            sub_category: null,
+            description: "For small projects.",
+            bullets: [
+                "Manage one page",
+                "12 monthly posts",
+                "Advertising campaign",
+                "Monthly report"
+            ]
+        },
+        "Dual Advertising": {
+            title: "Dual Advertising",
+            sub_category: null,
+            description: "Traditional and digital advertising together.",
+            bullets: [
+                "Manage two pages",
+                "20 monthly posts",
+                "Two advertising campaigns",
+                "500 Flyers",
+                "Weekly report"
+            ]
+        },
+        "Comprehensive Campaign": {
+            title: "Comprehensive Campaign",
+            sub_category: null,
+            description: "For serious brands.",
+            bullets: [
+                "Manage 3 pages",
+                "Daily content",
+                "Sponsored campaigns",
+                "Monthly video",
+                "Billboard"
+            ]
+        },
+        /* ── CONSULTATIONS ── */
+        "Initial Consultation": {
+            title: "Initial Consultation",
+            sub_category: null,
+            description: "Initial guidance for medical and legal matters.",
+            bullets: [
+                "60-minute session",
+                "Recommendations report",
+                "Answer 2 questions"
+            ]
+        },
+        "Comprehensive Consultation": {
+            title: "Comprehensive Consultation",
+            sub_category: null,
+            description: "Continuous legal and medical support.",
+            bullets: [
+                "3 monthly sessions",
+                "Contract review",
+                "15-day follow-up"
+            ]
+        },
+        /* ── PRINTING ── */
+        "Basic Printing": {
+            title: "Basic Printing",
+            sub_category: null,
+            description: "Essential print materials for your needs.",
+            bullets: [
+                "Design + 500 Flyers",
+                "200 business cards",
+                "3-day delivery"
+            ]
+        },
+        "Corporate Package": {
+            title: "Corporate Package",
+            sub_category: null,
+            description: "Complete visual identity.",
+            bullets: [
+                "Complete visual identity",
+                "1000 Flyers",
+                "Cards + Envelopes",
+                "Roll-up"
+            ]
+        },
+        /* ── MARKETING ── */
+        "Digital Marketing": {
+            title: "Digital Marketing",
+            sub_category: null,
+            description: "Effective digital presence.",
+            bullets: [
+                "Manage two pages",
+                "Content plan",
+                "Basic SEO",
+                "Monthly report"
+            ]
+        },
+        "Strategic Marketing": {
+            title: "Strategic Marketing",
+            sub_category: null,
+            description: "Measured and sustainable growth.",
+            bullets: [
+                "Market study",
+                "Marketing plan",
+                "Competitor analysis",
+                "Weekly reports"
+            ]
+        }
     },
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    fr: {
+        /* ── RELATIONS PUBLIQUES ── */
+        "Annual PR Plan": {
+            title: "Plan de RP Annuel",
+            sub_category: "Stratégie",
+            description: "Développer un plan complet définissant les objectifs, le public et les messages.",
+            bullets: [
+                "Analyse de la situation actuelle",
+                "Identification du public cible",
+                "Construction des messages clés",
+                "Indicateurs de performance KPIs"
+            ]
+        },
+        "Spokesperson Identity": {
+            title: "Identité du Porte-parole",
+            sub_category: "Stratégie",
+            description: "Former votre équipe à traiter professionnellement avec les médias.",
+            bullets: [
+                "Identification du porte-parole officiel",
+                "Formation aux interviews",
+                "Rédaction des déclarations officielles"
+            ]
+        },
+        "Audience and Market Analysis": {
+            title: "Analyse Audience & Marché",
+            sub_category: "Stratégie",
+            description: "Étude approfondie pour comprendre votre audience et votre position concurrentielle.",
+            bullets: [
+                "Segmentation de l'audience",
+                "Analyse des concurrents",
+                "Rapport PDF détaillé"
+            ]
+        },
+        "Digital Reputation Assessment": {
+            title: "Évaluation de la Réputation Numérique",
+            sub_category: "Réputation",
+            description: "Analyse complète de ce qui se dit sur votre institution en ligne.",
+            bullets: [
+                "Scan complet des plateformes",
+                "Analyse des sentiments",
+                "Comparaison avec les concurrents"
+            ]
+        },
+        "Positive Reputation Building": {
+            title: "Construction d'une Réputation Positive",
+            sub_category: "Réputation",
+            description: "Programme intégré pour améliorer l'image de votre institution.",
+            bullets: [
+                "Contenu positif ciblé",
+                "Relations avec les influenceurs",
+                "Gestion des avis"
+            ]
+        },
+        "Media Content Writing": {
+            title: "Rédaction de Contenu Médiatique",
+            sub_category: "Médias",
+            description: "Communiqués de presse, articles et contenu numérique professionnel.",
+            bullets: [
+                "Communiqués de presse bilingues",
+                "Articles d'opinion et d'actualité",
+                "Scripts pour les réseaux sociaux"
+            ]
+        },
+        "Visual Content Production": {
+            title: "Production de Contenu Visuel",
+            sub_category: "Médias",
+            description: "Conception et production de contenu visuel professionnel.",
+            bullets: [
+                "Design de publications",
+                "Vidéos Reels",
+                "Motion graphics"
+            ]
+        },
+        "Proactive Crisis Plan": {
+            title: "Plan de Crise Proactif",
+            sub_category: "Crises",
+            description: "Préparer un plan de crise complet avant qu'elle ne survienne.",
+            bullets: [
+                "Cartographie des risques",
+                "Protocoles de réponse",
+                "Modèles de réponse prêts à l'emploi",
+                "Formation de l'équipe"
+            ]
+        },
+        "Current Crisis Management": {
+            title: "Gestion de Crise en Cours",
+            sub_category: "Crises",
+            description: "Intervention d'urgence immédiate 7/24 pour gérer une crise en cours.",
+            bullets: [
+                "Évaluation de la crise en 2 heures",
+                "Plan de réponse immédiat",
+                "Suivi en temps réel 7/24"
+            ]
+        },
+        /* ── PUBLICITÉ ── */
+        "Digital Advertising": {
+            title: "Publicité Numérique",
+            sub_category: null,
+            description: "Pour les petits projets.",
+            bullets: [
+                "Gestion d'une page",
+                "12 publications mensuelles",
+                "Campagne publicitaire",
+                "Rapport mensuel"
+            ]
+        },
+        "Dual Advertising": {
+            title: "Publicité Double",
+            sub_category: null,
+            description: "Publicité traditionnelle et numérique ensemble.",
+            bullets: [
+                "Gestion de deux pages",
+                "20 publications mensuelles",
+                "Deux campagnes publicitaires",
+                "500 Flyers",
+                "Rapport hebdomadaire"
+            ]
+        },
+        "Comprehensive Campaign": {
+            title: "Campagne Complète",
+            sub_category: null,
+            description: "Pour les marques sérieuses.",
+            bullets: [
+                "Gestion de 3 pages",
+                "Contenu quotidien",
+                "Campagnes sponsorisées",
+                "Vidéo mensuelle",
+                "Panneau d'affichage"
+            ]
+        },
+        /* ── CONSULTATIONS ── */
+        "Initial Consultation": {
+            title: "Consultation Initiale",
+            sub_category: null,
+            description: "Orientation initiale pour les questions médicales et juridiques.",
+            bullets: [
+                "Séance de 60 minutes",
+                "Rapport de recommandations",
+                "Réponse à 2 questions"
+            ]
+        },
+        "Comprehensive Consultation": {
+            title: "Consultation Complète",
+            sub_category: null,
+            description: "Soutien juridique et médical continu.",
+            bullets: [
+                "3 séances mensuelles",
+                "Révision de contrat",
+                "Suivi de 15 jours"
+            ]
+        },
+        /* ── IMPRESSION ── */
+        "Basic Printing": {
+            title: "Impression de Base",
+            sub_category: null,
+            description: "Supports imprimés essentiels pour vos besoins.",
+            bullets: [
+                "Design + 500 Flyers",
+                "200 cartes de visite",
+                "Livraison en 3 jours"
+            ]
+        },
+        "Corporate Package": {
+            title: "Pack Entreprise",
+            sub_category: null,
+            description: "Identité visuelle complète.",
+            bullets: [
+                "Identité visuelle complète",
+                "1000 Flyers",
+                "Cartes + Enveloppes",
+                "Roll-up"
+            ]
+        },
+        /* ── MARKETING ── */
+        "Digital Marketing": {
+            title: "Marketing Numérique",
+            sub_category: null,
+            description: "Présence numérique efficace.",
+            bullets: [
+                "Gestion de deux pages",
+                "Plan de contenu",
+                "SEO de base",
+                "Rapport mensuel"
+            ]
+        },
+        "Strategic Marketing": {
+            title: "Marketing Stratégique",
+            sub_category: null,
+            description: "Croissance mesurée et durable.",
+            bullets: [
+                "Étude de marché",
+                "Plan marketing",
+                "Analyse des concurrents",
+                "Rapports hebdomadaires"
+            ]
+        }
+    },
+
+    /* ─────────────────────────────────────────────────────────────────────── */
     ar: {
-        "Annual PR Plan": { title: "خطة العلاقات العامة السنوية", description: "إعداد خطة العلاقات العامة السنوية." },
-        "Situation Analysis": { title: "تحليل الوضع الحالي", description: "تحليل معمّق للوضع الحالي للمؤسسة." },
-        "Target Audience Identification": { title: "تحديد الجمهور المستهدف", description: "تحديد وتحليل الجمهور المستهدف." },
-        "Key Messaging": { title: "بناء الرسائل الرئيسية", description: "بناء الرسائل الأساسية للتواصل المؤسسي." },
-        "Roadmap Development": { title: "خارطة طريق تنفيذية", description: "إعداد خارطة طريق تنفيذية لأنشطة العلاقات العامة." },
-        "KPI Setting": { title: "تحديد مؤشرات الأداء", description: "تحديد مؤشرات الأداء الرئيسية للحملات." },
-        "Audience Research": { title: "دراسة معمقة للجمهور", description: "دراسة معمقة لفهم الجمهور المستهدف." },
-        "Competitor Analysis PR": { title: "تحليل المنافسين - علاقات عامة", description: "تحليل المنافسين من منظور العلاقات العامة." },
-        "Audience Segmentation": { title: "تقسيم الجمهور", description: "تقسيم الجمهور إلى شرائح قابلة للاستهداف." },
-        "Communication Channels": { title: "قنوات التواصل", description: "تحديد أنجع قنوات التواصل." },
-        "Analytical Reports": { title: "تقارير تحليلية", description: "إعداد تقارير تحليلية مفصلة." },
-        "Institution Image Analysis": { title: "تحليل صورة المؤسسة", description: "تحليل الصورة العامة للمؤسسة." },
-        "Online Monitoring": { title: "رصد ما يقال على الإنترنت", description: "مراقبة ما يُقال عن المؤسسة على الإنترنت." },
-        "Media Coverage Measurement": { title: "قياس التغطية الإعلامية", description: "قياس حجم وجودة التغطية الإعلامية." },
-        "Competitor Benchmarking": { title: "مقارنة مع المنافسين", description: "مقارنة السمعة مع المنافسين." },
-        "Reputation Reports": { title: "تقارير وتوصيات", description: "إعداد تقارير السمعة والتوصيات." },
-        "Image Improvement": { title: "تحسين صورة المؤسسة", description: "تحسين الصورة العامة للمؤسسة." },
-        "Positive Content Creation": { title: "إنشاء محتوى إيجابي", description: "إنشاء محتوى إيجابي لتعزيز السمعة." },
-        "Influencer Collaboration": { title: "التعاون مع المؤثرين", description: "التعاون مع المؤثرين لبناء الثقة." },
-        "Community Management": { title: "إدارة الحسابات والتعليقات", description: "إدارة الحسابات والرد على التعليقات." },
-        "Continuous Monitoring": { title: "متابعة مستمرة", description: "متابعة مستمرة للسمعة والانطباع العام." },
-        "Proactive Crisis Plan": { title: "خطة أزمات استباقية", description: "إعداد خطة استباقية لإدارة الأزمات." },
-        "Risk Analysis": { title: "تحليل المخاطر", description: "تحديد وتقييم المخاطر المحتملة." },
-        "Crisis Scenarios": { title: "سيناريوهات الأزمات", description: "وضع سيناريوهات جاهزة لمختلف الأزمات." },
-        "Team Training": { title: "تدريب الفريق", description: "تدريب الفريق على الاستجابة الفعالة للأزمات." },
-        "Immediate Crisis Intervention": { title: "تدخل فوري", description: "استجابة فورية عند بداية الأزمة." },
-        "Professional Crisis Decisions": { title: "قرارات احترافية", description: "اتخاذ قرارات احترافية أثناء الأزمة." },
-        "Real-Time Follow-Up": { title: "متابعة في الوقت الحقيقي", description: "متابعة ورصد في الوقت الحقيقي أثناء الأزمة." },
-        "Official Media Statements": { title: "ردود إعلامية رسمية", description: "صياغة وإصدار ردود إعلامية رسمية." },
-        "Continuous Crisis Support": { title: "دعم مستمر", description: "دعم مستمر طوال فترة الأزمة." },
-        "Trust Restoration": { title: "استعادة الثقة", description: "استعادة ثقة الجمهور بعد الأزمة." },
-        "Post-Crisis Image Improvement": { title: "تحسين الصورة بعد الأزمة", description: "تحسين صورة المؤسسة بعد الأزمة." },
-        "Damage Assessment": { title: "تقييم الأضرار", description: "تقييم تأثير الأزمة والأضرار الناتجة." },
-        "Performance Improvement": { title: "تحسين الأداء", description: "تحسين الأداء بناء على دروس ما بعد الأزمة." },
-        "Press Releases": { title: "كتابة بيانات صحفية", description: "كتابة بيانات صحفية احترافية." },
-        "Article Writing": { title: "كتابة مقالات", description: "كتابة مقالات للنشر الإعلامي والرقمي." },
-        "Digital Content": { title: "إعداد محتوى رقمي", description: "إعداد محتوى رقمي لمختلف المنصات." },
-        "Communication Scripts": { title: "نصوص تواصل", description: "كتابة نصوص التواصل والمراسلات." },
-        "Multilingual Content": { title: "محتوى متعدد اللغات", description: "إنشاء محتوى بعدة لغات." },
-        "Media Network Building": { title: "بناء شبكة علاقات إعلامية", description: "بناء وصيانة شبكة اتصالات إعلامية." },
-        "Press Release Distribution": { title: "إرسال البيانات الصحفية", description: "توزيع البيانات الصحفية على وسائل الإعلام." },
-        "Coverage Follow-Up": { title: "متابعة التغطيات", description: "متابعة ورصد التغطيات الإعلامية." },
-        "Press Conferences": { title: "تنظيم المؤتمرات الصحفية", description: "تنظيم وإدارة المؤتمرات الصحفية." },
-        "Visual Design": { title: "تصميم محتوى بصري", description: "تصميم محتوى بصري احترافي." },
-        "Professional Posts": { title: "منشورات احترافية", description: "إنشاء منشورات احترافية لوسائل التواصل." },
-        "Short Videos": { title: "فيديوهات قصيرة", description: "إنتاج فيديوهات ترويجية قصيرة." },
-        "Motion Graphics": { title: "موشن غرافيك", description: "تصميم رسوم متحركة للمنصات الرقمية." },
-        "Digital Presence Analysis": { title: "تحليل الحضور الرقمي", description: "تحليل شامل للحضور الرقمي." },
-        "General Sentiment Measurement": { title: "قياس الانطباع العام", description: "قياس الانطباع العام الرقمي للجمهور." },
-        "Comments Analysis": { title: "تحليل التعليقات", description: "تحليل التعليقات وردود الفعل عبر الإنترنت." },
-        "Digital Competitor Benchmarking": { title: "مقارنة المنافسين رقمياً", description: "مقارنة السمعة الرقمية مع المنافسين." },
-        "Digital Presence Improvement": { title: "تحسين الوجود الرقمي", description: "تعزيز البصمة الرقمية للمؤسسة." },
-        "Engagement Management": { title: "إدارة التفاعل", description: "إدارة وتنمية التفاعل مع الجمهور." },
-        "Professional Content Publishing": { title: "نشر محتوى احترافي", description: "نشر محتوى احترافي عبر القنوات المختلفة." },
-        "Performance Tracking": { title: "متابعة الأداء", description: "مراقبة وتقارير الأداء الرقمي." },
-        "Ads Management": { title: "إدارة الحملات الإعلانية", description: "إدارة الحملات الإعلانية الرقمية." },
-        "SEO Optimization": { title: "تحسين محركات البحث", description: "تحسين ظهور المواقع في محركات البحث." },
-        "Email Marketing": { title: "التسويق عبر البريد", description: "حملات بريد إلكتروني استراتيجية." },
-        "Content Marketing": { title: "تسويق المحتوى", description: "إنشاء وتوزيع محتوى تسويقي." },
-        "Market Study": { title: "دراسة السوق", description: "أبحاث ودراسات سوق شاملة." },
-        "Competitor Analysis Mkt": { title: "تحليل المنافسين", description: "تحليل معمق للمنافسين." },
-        "Target Audience Definition": { title: "تحديد الجمهور المستهدف", description: "تحديد وتحليل شرائح الجمهور المستهدف." },
-        "Brand Building": { title: "بناء العلامة التجارية", description: "تطوير استراتيجي لحضور العلامة التجارية." },
-        "Promotional Campaigns": { title: "حملات ميدانية", description: "حملات ترويجية ميدانية." },
-        "Print Distribution": { title: "توزيع منشورات", description: "توزيع المواد الترويجية المطبوعة." },
-        "Events Organization": { title: "تنظيم فعاليات", description: "تخطيط وتنظيم كامل للفعاليات." },
-        "Promoters": { title: "المروجون", description: "توظيف وإدارة المروجين الميدانيين." },
-        "Flyers": { title: "منشورات دعائية", description: "طباعة منشورات دعائية عالية الجودة." },
-        "Brochures": { title: "مطويات", description: "طباعة مطويات مخصصة." },
-        "Posters": { title: "ملصقات", description: "طباعة ملصقات كبيرة الحجم." },
-        "Roll-ups": { title: "لافتات رول أب", description: "لافتات رول أب احترافية." },
-        "Business Cards": { title: "بطاقات عمل", description: "طباعة بطاقات عمل فاخرة." },
-        "Administrative Files": { title: "ملفات إدارية", description: "ملفات إدارية مطبوعة ومخصصة." },
-        "Official Envelopes": { title: "أظرفة رسمية", description: "أظرفة تحمل هوية المؤسسة." },
-        "Notebooks": { title: "دفاتر", description: "دفاتر مخصصة تحمل هوية العلامة." },
-        "Visual Identity Design": { title: "تصميم هوية بصرية", description: "حزمة كاملة لتصميم الهوية البصرية." },
-        "Printing Execution": { title: "تنفيذ الطباعة", description: "إدارة شاملة لتنفيذ أعمال الطباعة." },
-        "Fast Delivery": { title: "تسليم سريع", description: "خدمات تصميم وطباعة عاجلة." },
-        "High Quality Output": { title: "جودة عالية", description: "مخرجات بجودة عالية لجميع الأعمال." },
-        "Initial Legal Consultation": { title: "استشارة قانونية أولية", description: "استشارة أولية حول المسائل القانونية." },
-        "Contract Review": { title: "مراجعة العقود", description: "مراجعة مهنية للعقود." },
-        "Regulatory Advice": { title: "نصائح تنظيمية", description: "نصائح تنظيمية وامتثالية للمؤسسات." },
-        "Administrative Legal Support": { title: "دعم في الإجراءات", description: "دعم في الوثائق والإجراءات القانونية الإدارية." }
+        /* ── العلاقات العامة ── */
+        "Annual PR Plan": {
+            title: "خطة العلاقات العامة السنوية",
+            sub_category: "الاستراتيجية",
+            description: "تطوير خطة شاملة تحدد الأهداف والجمهور والرسائل.",
+            bullets: [
+                "تحليل الوضع الراهن",
+                "تحديد الجمهور المستهدف",
+                "بناء الرسائل الرئيسية",
+                "مؤشرات الأداء KPIs"
+            ]
+        },
+        "Spokesperson Identity": {
+            title: "بناء هوية الناطق الرسمي",
+            sub_category: "الاستراتيجية",
+            description: "تدريب فريقك على التعامل الاحترافي مع وسائل الإعلام.",
+            bullets: [
+                "تحديد الناطق الرسمي",
+                "تدريب على المقابلات",
+                "صياغة البيانات الرسمية"
+            ]
+        },
+        "Audience and Market Analysis": {
+            title: "تحليل الجمهور والسوق",
+            sub_category: "الاستراتيجية",
+            description: "دراسة معمقة لفهم جمهورك وموقعك التنافسي في السوق.",
+            bullets: [
+                "تقسيم الجمهور",
+                "تحليل المنافسين",
+                "تقرير PDF تفصيلي"
+            ]
+        },
+        "Digital Reputation Assessment": {
+            title: "تقييم السمعة الرقمية",
+            sub_category: "السمعة",
+            description: "تحليل شامل لما يقال عن مؤسستك رقمياً.",
+            bullets: [
+                "مسح شامل للمنصات",
+                "تحليل المشاعر Sentiment",
+                "مقارنة مع المنافسين"
+            ]
+        },
+        "Positive Reputation Building": {
+            title: "بناء سمعة إيجابية",
+            sub_category: "السمعة",
+            description: "برنامج متكامل لتحسين صورة مؤسستك.",
+            bullets: [
+                "محتوى إيجابي موجّه",
+                "علاقات مع المؤثرين",
+                "إدارة التقييمات"
+            ]
+        },
+        "Media Content Writing": {
+            title: "كتابة المحتوى الإعلامي",
+            sub_category: "الإعلام",
+            description: "بيانات صحفية، مقالات، ومحتوى رقمي احترافي.",
+            bullets: [
+                "بيانات صحفية باللغتين",
+                "مقالات رأي وخبرية",
+                "نصوص مواقع التواصل"
+            ]
+        },
+        "Visual Content Production": {
+            title: "إنتاج محتوى مرئي",
+            sub_category: "الإعلام",
+            description: "تصميم وإنتاج محتوى بصري احترافي.",
+            bullets: [
+                "تصميم منشورات",
+                "فيديوهات Reels",
+                "Motion graphics"
+            ]
+        },
+        "Proactive Crisis Plan": {
+            title: "خطة الأزمات الاستباقية",
+            sub_category: "الأزمات",
+            description: "إعداد خطة أزمة شاملة قبل وقوعها.",
+            bullets: [
+                "رسم خارطة المخاطر",
+                "بروتوكولات الاستجابة",
+                "قوالب ردود جاهزة",
+                "تدريب الفريق"
+            ]
+        },
+        "Current Crisis Management": {
+            title: "إدارة الأزمة الحالية",
+            sub_category: "الأزمات",
+            description: "تدخل طارئ فوري 7/24 لإدارة أزمة جارية.",
+            bullets: [
+                "تقييم الأزمة في ساعتين (2)",
+                "خطة استجابة فورية",
+                "متابعة لحظية 7/24"
+            ]
+        },
+        /* ── الإشهار ── */
+        "Digital Advertising": {
+            title: "الإشهار الرقمي",
+            sub_category: null,
+            description: "للمشاريع الصغيرة.",
+            bullets: [
+                "إدارة صفحة واحدة",
+                "12 منشور شهري",
+                "حملة إعلانية",
+                "تقرير شهري"
+            ]
+        },
+        "Dual Advertising": {
+            title: "الإشهار المزدوج",
+            sub_category: null,
+            description: "إشهار تقليدي ورقمي معاً.",
+            bullets: [
+                "إدارة صفحتين",
+                "20 منشور شهري",
+                "حملتان إعلانيتان",
+                "500 Flyers",
+                "تقرير أسبوعي"
+            ]
+        },
+        "Comprehensive Campaign": {
+            title: "الحملة الشاملة",
+            sub_category: null,
+            description: "للعلامة التجارية الجادة.",
+            bullets: [
+                "إدارة 3 صفحات",
+                "محتوى يومي",
+                "حملات ممولة",
+                "فيديو شهري",
+                "لوحة إشهارية"
+            ]
+        },
+        /* ── الاستشارات ── */
+        "Initial Consultation": {
+            title: "استشارة أولية",
+            sub_category: null,
+            description: "توجيه أولي للمسائل الطبية والقانونية.",
+            bullets: [
+                "جلسة 60 دقيقة",
+                "تقرير توصيات",
+                "إجابة سؤالين"
+            ]
+        },
+        "Comprehensive Consultation": {
+            title: "استشارة متكاملة",
+            sub_category: null,
+            description: "دعم قانوني وطبي مستمر.",
+            bullets: [
+                "3 جلسات شهرية",
+                "مراجعة عقد",
+                "متابعة 15 يوم"
+            ]
+        },
+        /* ── الطباعة ── */
+        "Basic Printing": {
+            title: "طباعة أساسية",
+            sub_category: null,
+            description: "مواد طباعة أساسية لاحتياجاتك.",
+            bullets: [
+                "تصميم + 500 Flyers",
+                "200 بطاقة عمل",
+                "تسليم 3 أيام"
+            ]
+        },
+        "Corporate Package": {
+            title: "الحزمة المؤسسية",
+            sub_category: null,
+            description: "هوية بصرية كاملة.",
+            bullets: [
+                "هوية بصرية كاملة",
+                "1000 Flyers",
+                "بطاقات + أظرف",
+                "Roll-up"
+            ]
+        },
+        /* ── التسويق ── */
+        "Digital Marketing": {
+            title: "التسويق الرقمي",
+            sub_category: null,
+            description: "حضور رقمي فعّال.",
+            bullets: [
+                "إدارة صفحتين",
+                "خطة محتوى",
+                "SEO أساسي",
+                "تقرير شهري"
+            ]
+        },
+        "Strategic Marketing": {
+            title: "التسويق الاستراتيجي",
+            sub_category: null,
+            description: "نمو مدروس ومستدام.",
+            bullets: [
+                "دراسة سوق",
+                "خطة تسويق",
+                "تحليل المنافسين",
+                "تقارير أسبوعية"
+            ]
+        }
     }
 };
 

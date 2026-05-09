@@ -1,4 +1,5 @@
 import os
+import json
 from app import app, db
 from models import User, Service
 from werkzeug.security import generate_password_hash
@@ -6,155 +7,302 @@ from werkzeug.security import generate_password_hash
 def seed_data():
     with app.app_context():
         # Check if admin exists
-        admin = User.query.filter_by(email='admin@gmail.com').first()
+        admin = User.query.filter_by(email='admin@prz.com').first()
         if not admin:
             admin = User(
-                email='admin@gmail.com',
-                password_hash=generate_password_hash('123456'),
+                email='admin@prz.com',
+                password_hash=generate_password_hash('admin123'),
                 role='admin'
             )
             db.session.add(admin)
-            print("Admin created")
+            print("Admin created: admin@prz.com / admin123")
 
+        # ── New Service Structure ──────────────────────────────────────────────
+        # Category (Domain) → Sub-category → Service with description + bullets
         services_data = [
 
-            # ── 1. Public Relations ────────────────────────────────────────
-            # Strategy & Planning
-            {"title": "Annual PR Plan",              "description": "Preparation of the annual public relations plan.",         "category": "Public Relations"},
-            {"title": "Situation Analysis",          "description": "In-depth analysis of the institution's current position.", "category": "Public Relations"},
-            {"title": "Target Audience Identification","description": "Identifying and profiling the target audience.",         "category": "Public Relations"},
-            {"title": "Key Messaging",               "description": "Building the institution's core communication messages.",  "category": "Public Relations"},
-            {"title": "Roadmap Development",         "description": "Preparing an executive roadmap for PR activities.",        "category": "Public Relations"},
-            {"title": "KPI Setting",                 "description": "Defining key performance indicators for PR campaigns.",    "category": "Public Relations"},
-            # Audience & Market Analysis
-            {"title": "Audience Research",           "description": "In-depth study to understand the target audience.",       "category": "Public Relations"},
-            {"title": "Competitor Analysis PR",      "description": "Analysis of competitors from a PR perspective.",          "category": "Public Relations"},
-            {"title": "Audience Segmentation",       "description": "Segmentation of the audience into actionable groups.",    "category": "Public Relations"},
-            {"title": "Communication Channels",      "description": "Identifying the most effective communication channels.",  "category": "Public Relations"},
-            {"title": "Analytical Reports",          "description": "Preparation of detailed analytical reports.",             "category": "Public Relations"},
+            # ══════════════════════════════════════════════════════════════════
+            # 1. PUBLIC RELATIONS  ←  العلاقات العامة
+            # ══════════════════════════════════════════════════════════════════
 
-            # ── 2. Reputation Management ───────────────────────────────────
-            # Reputation Analysis
-            {"title": "Institution Image Analysis",  "description": "Analysis of the institution's public image.",            "category": "Reputation Management"},
-            {"title": "Online Monitoring",           "description": "Monitoring what is being said about the institution online.", "category": "Reputation Management"},
-            {"title": "Media Coverage Measurement",  "description": "Measuring the volume and quality of media coverage.",    "category": "Reputation Management"},
-            {"title": "Competitor Benchmarking",     "description": "Comparing reputation against competitors.",              "category": "Reputation Management"},
-            {"title": "Reputation Reports",          "description": "Preparation of reputation reports and recommendations.", "category": "Reputation Management"},
-            # Reputation Building
-            {"title": "Image Improvement",           "description": "Improving the institution's overall public image.",      "category": "Reputation Management"},
-            {"title": "Positive Content Creation",   "description": "Creating positive content to strengthen reputation.",   "category": "Reputation Management"},
-            {"title": "Influencer Collaboration",    "description": "Collaborating with influencers to build brand trust.",  "category": "Reputation Management"},
-            {"title": "Community Management",        "description": "Managing accounts and responding to comments.",          "category": "Reputation Management"},
-            {"title": "Continuous Monitoring",       "description": "Ongoing monitoring of reputation and sentiment.",        "category": "Reputation Management"},
+            # Sub: Strategy  ←  الاستراتيجية
+            {
+                "title": "Annual PR Plan",
+                "description": "Develop a comprehensive plan defining objectives, audience, and messages.",
+                "category": "Public Relations",
+                "sub_category": "Strategy",
+                "bullets": [
+                    "Current situation analysis",
+                    "Target audience identification",
+                    "Key message building",
+                    "KPI performance indicators"
+                ]
+            },
+            {
+                "title": "Spokesperson Identity",
+                "description": "Train your team to professionally deal with the media.",
+                "category": "Public Relations",
+                "sub_category": "Strategy",
+                "bullets": [
+                    "Identify the official spokesperson",
+                    "Interview training",
+                    "Official statement drafting"
+                ]
+            },
+            {
+                "title": "Audience and Market Analysis",
+                "description": "In-depth study to understand your audience and competitive position in the market.",
+                "category": "Public Relations",
+                "sub_category": "Strategy",
+                "bullets": [
+                    "Audience segmentation",
+                    "Competitor analysis",
+                    "Detailed PDF report"
+                ]
+            },
 
-            # ── 3. Crisis Management ───────────────────────────────────────
-            # Crisis Plan
-            {"title": "Proactive Crisis Plan",       "description": "Developing a proactive crisis management plan.",        "category": "Crisis Management"},
-            {"title": "Risk Analysis",               "description": "Identifying and assessing potential risks.",            "category": "Crisis Management"},
-            {"title": "Crisis Scenarios",            "description": "Preparing ready-made scenarios for various crises.",   "category": "Crisis Management"},
-            {"title": "Team Training",               "description": "Training the team to respond to crises effectively.",  "category": "Crisis Management"},
-            # Crisis Response
-            {"title": "Immediate Crisis Intervention","description": "Immediate response at the onset of a crisis.",        "category": "Crisis Management"},
-            {"title": "Professional Crisis Decisions","description": "Expert-level decision-making during a crisis.",       "category": "Crisis Management"},
-            {"title": "Real-Time Follow-Up",         "description": "Real-time monitoring and response during crisis.",     "category": "Crisis Management"},
-            {"title": "Official Media Statements",   "description": "Crafting and issuing official media responses.",       "category": "Crisis Management"},
-            {"title": "Continuous Crisis Support",   "description": "Continuous support throughout the crisis period.",    "category": "Crisis Management"},
-            # Post-Crisis
-            {"title": "Trust Restoration",           "description": "Restoring public trust after a crisis.",              "category": "Crisis Management"},
-            {"title": "Post-Crisis Image Improvement","description": "Improving the institution's image after a crisis.",  "category": "Crisis Management"},
-            {"title": "Damage Assessment",           "description": "Evaluating the impact and damages caused by the crisis.", "category": "Crisis Management"},
-            {"title": "Performance Improvement",     "description": "Enhancing performance based on post-crisis lessons.", "category": "Crisis Management"},
+            # Sub: Reputation  ←  السمعة
+            {
+                "title": "Digital Reputation Assessment",
+                "description": "Comprehensive analysis of what is being said about your institution digitally.",
+                "category": "Public Relations",
+                "sub_category": "Reputation",
+                "bullets": [
+                    "Comprehensive platform scan",
+                    "Sentiment analysis",
+                    "Competitor comparison"
+                ]
+            },
+            {
+                "title": "Positive Reputation Building",
+                "description": "An integrated program to improve your institution's image.",
+                "category": "Public Relations",
+                "sub_category": "Reputation",
+                "bullets": [
+                    "Targeted positive content",
+                    "Influencer relations",
+                    "Review management"
+                ]
+            },
 
-            # ── 4. Media ───────────────────────────────────────────────────
-            # Media Content Writing
-            {"title": "Press Releases",              "description": "Writing professional press releases.",                 "category": "Media"},
-            {"title": "Article Writing",             "description": "Writing articles for media and online publication.",  "category": "Media"},
-            {"title": "Digital Content",             "description": "Preparing digital content for various platforms.",    "category": "Media"},
-            {"title": "Communication Scripts",       "description": "Writing communication and messaging scripts.",        "category": "Media"},
-            {"title": "Multilingual Content",        "description": "Creating content in multiple languages.",             "category": "Media"},
-            # Media Relations
-            {"title": "Media Network Building",      "description": "Building and maintaining a network of media contacts.", "category": "Media"},
-            {"title": "Press Release Distribution",  "description": "Distributing press releases to relevant media.",     "category": "Media"},
-            {"title": "Coverage Follow-Up",          "description": "Following up on and monitoring media coverage.",      "category": "Media"},
-            {"title": "Press Conferences",           "description": "Organizing and managing press conferences.",          "category": "Media"},
-            # Visual Content Production
-            {"title": "Visual Design",               "description": "Designing professional visual content.",             "category": "Media"},
-            {"title": "Professional Posts",          "description": "Creating polished social media posts.",              "category": "Media"},
-            {"title": "Short Videos",                "description": "Producing short-form promotional videos.",           "category": "Media"},
-            {"title": "Motion Graphics",             "description": "Designing motion graphics for digital platforms.",   "category": "Media"},
+            # Sub: Media  ←  الإعلام
+            {
+                "title": "Media Content Writing",
+                "description": "Press releases, articles, and professional digital content.",
+                "category": "Public Relations",
+                "sub_category": "Media",
+                "bullets": [
+                    "Bilingual press releases",
+                    "Opinion and news articles",
+                    "Social media scripts"
+                ]
+            },
+            {
+                "title": "Visual Content Production",
+                "description": "Design and produce professional visual content.",
+                "category": "Public Relations",
+                "sub_category": "Media",
+                "bullets": [
+                    "Post design",
+                    "Reels videos",
+                    "Motion graphics"
+                ]
+            },
 
-            # ── 5. Digital Reputation ─────────────────────────────────────
-            # Digital Reputation Assessment
-            {"title": "Digital Presence Analysis",   "description": "Comprehensive analysis of the digital presence.",   "category": "Digital Reputation"},
-            {"title": "General Sentiment Measurement","description": "Measuring the public's overall digital sentiment.", "category": "Digital Reputation"},
-            {"title": "Comments Analysis",           "description": "Analyzing comments and audience reactions online.", "category": "Digital Reputation"},
-            {"title": "Digital Competitor Benchmarking","description": "Comparing digital reputation against competitors.", "category": "Digital Reputation"},
-            # Digital Reputation Building
-            {"title": "Digital Presence Improvement","description": "Enhancing the institution's digital footprint.",   "category": "Digital Reputation"},
-            {"title": "Engagement Management",       "description": "Managing and growing audience interaction online.", "category": "Digital Reputation"},
-            {"title": "Professional Content Publishing","description": "Publishing professional content across channels.", "category": "Digital Reputation"},
-            {"title": "Performance Tracking",        "description": "Monitoring and reporting on digital performance.", "category": "Digital Reputation"},
+            # Sub: Crisis  ←  الأزمات
+            {
+                "title": "Proactive Crisis Plan",
+                "description": "Prepare a comprehensive crisis plan before it occurs.",
+                "category": "Public Relations",
+                "sub_category": "Crisis",
+                "bullets": [
+                    "Risk mapping",
+                    "Response protocols",
+                    "Ready-made response templates",
+                    "Team training"
+                ]
+            },
+            {
+                "title": "Current Crisis Management",
+                "description": "Immediate emergency intervention 7/24 to manage an ongoing crisis.",
+                "category": "Public Relations",
+                "sub_category": "Crisis",
+                "bullets": [
+                    "Crisis assessment within 2 hours",
+                    "Immediate response plan",
+                    "Real-time follow-up 7/24"
+                ]
+            },
 
-            # ── 6. Marketing ──────────────────────────────────────────────
-            # Digital Marketing
-            {"title": "Ads Management",              "description": "Managing digital advertising campaigns.",           "category": "Marketing"},
-            {"title": "SEO Optimization",            "description": "Search engine optimization for websites.",          "category": "Marketing"},
-            {"title": "Email Marketing",             "description": "Strategic email marketing campaigns.",              "category": "Marketing"},
-            {"title": "Content Marketing",           "description": "Creation and distribution of marketing content.",  "category": "Marketing"},
-            # Strategic Marketing
-            {"title": "Market Study",                "description": "Comprehensive market research and studies.",        "category": "Marketing"},
-            {"title": "Competitor Analysis Mkt",     "description": "In-depth analysis of competitors.",                "category": "Marketing"},
-            {"title": "Target Audience Definition",  "description": "Identifying and profiling target audiences.",      "category": "Marketing"},
-            {"title": "Brand Building",              "description": "Strategic development of brand presence.",          "category": "Marketing"},
-            # Field Marketing
-            {"title": "Promotional Campaigns",       "description": "On-ground promotional campaigns.",                 "category": "Marketing"},
-            {"title": "Print Distribution",          "description": "Distribution of promotional print materials.",     "category": "Marketing"},
-            {"title": "Events Organization",         "description": "Full-service event planning and organization.",    "category": "Marketing"},
-            {"title": "Promoters",                   "description": "Hiring and managing field promoters.",             "category": "Marketing"},
+            # ══════════════════════════════════════════════════════════════════
+            # 2. ADVERTISING  ←  الإشهار
+            # ══════════════════════════════════════════════════════════════════
+            {
+                "title": "Digital Advertising",
+                "description": "For small projects.",
+                "category": "Advertising",
+                "sub_category": None,
+                "bullets": [
+                    "Manage one page",
+                    "12 monthly posts",
+                    "Advertising campaign",
+                    "Monthly report"
+                ]
+            },
+            {
+                "title": "Dual Advertising",
+                "description": "Traditional and digital advertising together.",
+                "category": "Advertising",
+                "sub_category": None,
+                "bullets": [
+                    "Manage two pages",
+                    "20 monthly posts",
+                    "Two advertising campaigns",
+                    "500 Flyers",
+                    "Weekly report"
+                ]
+            },
+            {
+                "title": "Comprehensive Campaign",
+                "description": "For serious brands.",
+                "category": "Advertising",
+                "sub_category": None,
+                "bullets": [
+                    "Manage 3 pages",
+                    "Daily content",
+                    "Sponsored campaigns",
+                    "Monthly video",
+                    "Billboard"
+                ]
+            },
 
-            # ── 7. Advertising Printing ────────────────────────────────────
-            {"title": "Flyers",                      "description": "High-quality flyer printing for distribution.",   "category": "Advertising Printing"},
-            {"title": "Brochures",                   "description": "Tri-fold and custom brochure printing.",           "category": "Advertising Printing"},
-            {"title": "Posters",                     "description": "Large format poster printing.",                   "category": "Advertising Printing"},
-            {"title": "Roll-ups",                    "description": "Professional roll-up banners for events.",        "category": "Advertising Printing"},
+            # ══════════════════════════════════════════════════════════════════
+            # 3. CONSULTATIONS  ←  الاستشارات
+            # ══════════════════════════════════════════════════════════════════
+            {
+                "title": "Initial Consultation",
+                "description": "Initial guidance for medical and legal matters.",
+                "category": "Consultations",
+                "sub_category": None,
+                "bullets": [
+                    "60-minute session",
+                    "Recommendations report",
+                    "Answer 2 questions"
+                ]
+            },
+            {
+                "title": "Comprehensive Consultation",
+                "description": "Continuous legal and medical support.",
+                "category": "Consultations",
+                "sub_category": None,
+                "bullets": [
+                    "3 monthly sessions",
+                    "Contract review",
+                    "15-day follow-up"
+                ]
+            },
 
-            # ── 8. Corporate Printing ─────────────────────────────────────
-            {"title": "Business Cards",              "description": "Premium business card printing.",                 "category": "Corporate Printing"},
-            {"title": "Administrative Files",        "description": "Custom printed administrative folders and files.", "category": "Corporate Printing"},
-            {"title": "Official Envelopes",          "description": "Branded envelopes for corporate use.",            "category": "Corporate Printing"},
-            {"title": "Notebooks",                   "description": "Custom branded notebooks.",                       "category": "Corporate Printing"},
+            # ══════════════════════════════════════════════════════════════════
+            # 4. PRINTING  ←  الطباعة
+            # ══════════════════════════════════════════════════════════════════
+            {
+                "title": "Basic Printing",
+                "description": "Essential print materials for your needs.",
+                "category": "Printing",
+                "sub_category": None,
+                "bullets": [
+                    "Design + 500 Flyers",
+                    "200 business cards",
+                    "3-day delivery"
+                ]
+            },
+            {
+                "title": "Corporate Package",
+                "description": "Complete visual identity.",
+                "category": "Printing",
+                "sub_category": None,
+                "bullets": [
+                    "Complete visual identity",
+                    "1000 Flyers",
+                    "Cards + Envelopes",
+                    "Roll-up"
+                ]
+            },
 
-            # ── 9. Design & Printing ──────────────────────────────────────
-            {"title": "Visual Identity Design",      "description": "Full visual identity design and printing package.", "category": "Design & Printing"},
-            {"title": "Printing Execution",          "description": "End-to-end management of print execution.",      "category": "Design & Printing"},
-            {"title": "Fast Delivery",               "description": "Expedited design and printing services.",        "category": "Design & Printing"},
-            {"title": "High Quality Output",         "description": "Premium quality output for all print jobs.",     "category": "Design & Printing"},
-
-            # ── 10. Legal Services ────────────────────────────────────────
-            {"title": "Initial Legal Consultation",  "description": "Initial consultation on legal matters.",         "category": "Legal Services"},
-            {"title": "Contract Review",             "description": "Professional review of corporate and individual contracts.", "category": "Legal Services"},
-            {"title": "Regulatory Advice",           "description": "Regulatory and compliance advice for businesses.", "category": "Legal Services"},
-            {"title": "Administrative Legal Support","description": "Support with administrative legal documents.",   "category": "Legal Services"},
+            # ══════════════════════════════════════════════════════════════════
+            # 5. MARKETING  ←  التسويق
+            # ══════════════════════════════════════════════════════════════════
+            {
+                "title": "Digital Marketing",
+                "description": "Effective digital presence.",
+                "category": "Marketing",
+                "sub_category": None,
+                "bullets": [
+                    "Manage two pages",
+                    "Content plan",
+                    "Basic SEO",
+                    "Monthly report"
+                ]
+            },
+            {
+                "title": "Strategic Marketing",
+                "description": "Measured and sustainable growth.",
+                "category": "Marketing",
+                "sub_category": None,
+                "bullets": [
+                    "Market study",
+                    "Marketing plan",
+                    "Competitor analysis",
+                    "Weekly reports"
+                ]
+            },
         ]
+
+        # Clear old services that are no longer in the catalog
+        new_titles = {s['title'] for s in services_data}
+        old_services = Service.query.all()
+        for svc in old_services:
+            if svc.title not in new_titles:
+                db.session.delete(svc)
+        db.session.commit()
 
         services_added = False
         for s in services_data:
+            bullets_json = json.dumps(s['bullets'], ensure_ascii=False)
             existing = Service.query.filter_by(title=s['title']).first()
             if not existing:
-                new_service = Service(title=s['title'], description=s['description'], category=s['category'])
+                new_service = Service(
+                    title=s['title'],
+                    description=s['description'],
+                    category=s['category'],
+                    sub_category=s.get('sub_category'),
+                    bullet_points=bullets_json
+                )
                 db.session.add(new_service)
                 services_added = True
-            elif existing.category != s['category'] or existing.description != s['description']:
-                existing.category = s['category']
-                existing.description = s['description']
-                services_added = True
+            else:
+                changed = False
+                if existing.category != s['category']:
+                    existing.category = s['category']
+                    changed = True
+                if existing.description != s['description']:
+                    existing.description = s['description']
+                    changed = True
+                if existing.sub_category != s.get('sub_category'):
+                    existing.sub_category = s.get('sub_category')
+                    changed = True
+                if existing.bullet_points != bullets_json:
+                    existing.bullet_points = bullets_json
+                    changed = True
+                if changed:
+                    services_added = True
+
+        db.session.commit()
 
         if services_added:
             print("Services added/updated successfully.")
         else:
             print("No new services to add.")
-
-        db.session.commit()
 
 if __name__ == '__main__':
     seed_data()

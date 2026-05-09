@@ -4,9 +4,9 @@ import translations from './i18n';
 export const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
-    // Default to 'en', but can check localStorage
+    // Default to 'ar', but check localStorage
     const [lang, setLang] = useState(() => {
-        return localStorage.getItem('appLang') || 'en';
+        return localStorage.getItem('appLang') || 'ar';
     });
 
     useEffect(() => {
@@ -25,17 +25,49 @@ export const LanguageProvider = ({ children }) => {
     };
 
     const translateCategory = (category) => {
-        const categoryKey = category || 'Uncategorized';
-        return translations[lang].categories?.[categoryKey] || translations.en.categories[categoryKey] || categoryKey;
+        if (!category) return t('uncategorized');
+        return (
+            translations[lang].categories?.[category] ||
+            translations.en.categories?.[category] ||
+            category
+        );
     };
 
+    const translateSubCategory = (subCategory) => {
+        if (!subCategory) return null;
+        return (
+            translations[lang].categories?.[subCategory] ||
+            translations.en.categories?.[subCategory] ||
+            subCategory
+        );
+    };
+
+    /**
+     * Returns a fully-localized service object.
+     * `service` can be either a full object from the API or just a service title string.
+     */
     const translateService = (service) => {
-        const localized = translations[lang].serviceCopy?.[service.title];
+        // Guard: if service is null/undefined return an empty shell
+        if (!service) {
+            return { title: '—', description: '', category: '', sub_category: null, bullet_points: [] };
+        }
+
+        // If only a string (title) was passed, build a minimal object
+        const svc = typeof service === 'string'
+            ? { title: service, description: '', category: '', sub_category: null, bullet_points: [] }
+            : service;
+
+        const localized = translations[lang]?.serviceCopy?.[svc.title];
+        const fallback  = translations.en?.serviceCopy?.[svc.title];
+        const copy      = localized || fallback;
+
         return {
-            ...service,
-            title: localized?.title || service.title,
-            description: localized?.description || service.description,
-            category: translateCategory(service.category)
+            ...svc,
+            title:        copy?.title        || svc.title,
+            description:  copy?.description  || svc.description,
+            sub_category: copy?.sub_category !== undefined ? copy.sub_category : svc.sub_category,
+            bullet_points: copy?.bullets     || svc.bullet_points || [],
+            category:     translateCategory(svc.category)
         };
     };
 
@@ -47,7 +79,7 @@ export const LanguageProvider = ({ children }) => {
     };
 
     return (
-        <LanguageContext.Provider value={{ lang, setLang, t, format, translateCategory, translateService }}>
+        <LanguageContext.Provider value={{ lang, setLang, t, format, translateCategory, translateSubCategory, translateService }}>
             {children}
         </LanguageContext.Provider>
     );

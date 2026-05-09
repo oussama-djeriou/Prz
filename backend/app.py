@@ -45,6 +45,16 @@ with app.app_context():
     if 'chat_message' not in inspector.get_table_names():
         db.create_all()
 
+    # Migrate new service columns if needed
+    if 'service' in inspector.get_table_names():
+        service_columns = [col['name'] for col in inspector.get_columns('service')]
+        if 'sub_category' not in service_columns:
+            db.session.execute(text("ALTER TABLE service ADD COLUMN sub_category VARCHAR(100)"))
+            db.session.commit()
+        if 'bullet_points' not in service_columns:
+            db.session.execute(text("ALTER TABLE service ADD COLUMN bullet_points TEXT"))
+            db.session.commit()
+
     admin = User.query.filter_by(email='admin@prz.com').first()
     if not admin:
         admin = User(
@@ -345,18 +355,8 @@ def accept_service_request(request_id):
         return jsonify({"msg": "Invalid expert selected"}), 400
 
     service_request.expert_id = expert_id
-    service_request.status = 'accepted'
+    service_request.status = 'expert_assigned'
     db.session.commit()
-
-    try:
-        send_request_status_email(service_request)
-    except Exception as exc:
-        return jsonify({
-            'message': 'Request accepted, but email could not be sent',
-            'email_error': str(exc),
-            'request_id': service_request.id,
-            'status': service_request.status
-        }), 500
 
     return jsonify({
         "id": service_request.id,
@@ -384,6 +384,84 @@ def reject_service_request(request_id):
         "id": service_request.id,
         "status": service_request.status
     }), 200
+
+def send_expert_decision_email_to_admin(service_request, decision):
+    """Notify the admin by email about the expert's accept/reject decision."""
+    admin = User.query.filter_by(role='admin').first()
+    if not admin:
+        return
+    expert_name = service_request.expert.full_name if service_request.expert else 'Expert'
+    client_name = service_request.name
+    service_title = service_request.service.title if service_request.service else 'Service'
+    subject = f'PRZ - Expert Decision on Request #{service_request.id}'
+    if decision == 'accepted':
+        body = f"""Hello Admin,
+
+Expert \"{expert_name}\" has ACCEPTED the service request from client \"{client_name}\".
+Service: {service_title}
+Request ID: #{service_request.id}
+
+The request status has been updated to Accepted."""
+    else:
+        body = f"""Hello Admin,
+
+Expert \"{expert_name}\" has REJECTED the service request from client \"{client_name}\".
+Service: {service_title}
+Request ID: #{service_request.id}
+
+The request has been returned to pending status and needs to be reassigned."""
+    try:
+        send_email(admin.email, subject, body)
+    except Exception as e:
+        print(f"Could not notify admin: {e}")
+
+
+@app.route('/api/requests/<int:request_id>/expert-decision', methods=['PUT'])
+@jwt_required()
+def expert_decision(request_id):
+    """Allow the assigned expert to accept or reject a service request."""
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+
+    if not user or user.role != 'expert':
+        return jsonify({'message': 'Only experts can perform this action'}), 403
+
+    service_request = ServiceRequest.query.get(request_id)
+    if not service_request:
+        return jsonify({'message': 'Request not found'}), 404
+
+    # Only the assigned expert can decide
+    if str(service_request.expert_id) != str(current_user_id):
+        return jsonify({'message': 'Unauthorized - you are not assigned to this request'}), 403
+
+    if service_request.status not in ('expert_assigned', 'pending'):
+        return jsonify({'message': 'Cannot change decision on this request at this stage'}), 400
+
+    data = request.get_json() or {}
+    decision = data.get('decision')
+
+    if decision not in ('accepted', 'rejected'):
+        return jsonify({'message': 'Decision must be accepted or rejected'}), 400
+
+    if decision == 'accepted':
+        service_request.status = 'accepted'
+    else:
+        # Reject: clear expert assignment and return to pending
+        service_request.status = 'rejected'
+
+    db.session.commit()
+
+    # Notify admin
+    send_expert_decision_email_to_admin(service_request, decision)
+
+    # Also notify the client via email
+    try:
+        send_request_status_email(service_request)
+    except Exception as e:
+        print(f"Could not send client email: {e}")
+
+    return jsonify(service_request.to_dict()), 200
+
 
 @app.route('/api/chat/<int:request_id>', methods=['GET'])
 @jwt_required()
