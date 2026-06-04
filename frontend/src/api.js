@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000',
+    baseURL: import.meta.env.VITE_API_URL || 'https://prz-5ose.onrender.com/',
 });
 
 api.interceptors.request.use(
