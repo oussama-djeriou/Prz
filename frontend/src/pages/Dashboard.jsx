@@ -4,6 +4,8 @@ import api from '../api';
 import { Link } from 'react-router-dom';
 import { LanguageContext } from '../LanguageContext';
 
+const API_BASE = (import.meta.env.VITE_API_URL || 'https://prz-5ose.onrender.com').replace(/\/$/, '');
+
 const StatusBadge = ({ status, t }) => {
     let colorClass = 'bg-gray-100 text-gray-800';
     if (status === 'completed')       colorClass = 'bg-green-100 text-green-800';
@@ -289,7 +291,7 @@ const AdminDashboard = () => {
                                     <td className="px-6 py-4">{exp.full_name}</td>
                                     <td className="px-6 py-4">{exp.specialty}</td>
                                     <td className="px-6 py-4">
-                                        <a href={`http://127.0.0.1:5000/uploads/${exp.cv_file}`} target="_blank" rel="noreferrer" className="text-blue-600 underline">{t('viewPdf')}</a>
+                                        <a href={`${API_BASE}/uploads/${exp.cv_file}`} target="_blank" rel="noreferrer" className="text-blue-600 underline">{t('viewPdf')}</a>
                                     </td>
                                     <td className="px-6 py-4 flex gap-2">
                                         <button onClick={() => handleApproveExpert(exp.id)} className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">{t('approve')}</button>
